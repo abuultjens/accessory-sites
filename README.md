@@ -13,7 +13,7 @@ $ sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_FORMAT] [OUTFILE_DATA]
 # How it works
 accessory-sites tricks the incredibly fast snp-sites into thinking that invariant accessory positions actually contain snps so that they are extracted from alignments. This is useful as the fake snp sites are then converted back to being invariant accessory sites and concatenated to the original variant core and accessory sites extracted by snp-sites.
 
-Basically, snp-sites is first run with the original alignment and the sites extracted are recorded. All 'N' in the alignment are then replaced with 'A' and this modified alignment is run through snp-sites with any new sites compared to the original run identified. Novel sites are then extracted, 'A' replaced with the original 'N' and the invariant accessory positions are added to the outfile. This process is repeated for 'G', 'C' and 'T' so that all invariant accessory sites are extracted.
+Basically, snp-sites is first run with the original alignment and the sites extracted are recorded. All 'N' in the alignment are then replaced with 'A', effectively introducing a fake snp, and this modified alignment is run through snp-sites with any new sites compared to the original run identified. Novel sites are then extracted, 'A' replaced with the original 'N' and the invariant accessory positions are added to the outfile. This process is repeated for 'G', 'C' and 'T' so that all invariant accessory sites are obtained.
 
 
 
