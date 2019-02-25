@@ -5,7 +5,7 @@ A script to extract invariant accessory sites from whole genome alignments
 Andrew Buultjens
 
 # Synopsis
-Accessory sites are positions in an alignment in which one or more taxa have missing information that is generally denoted by 'N'. Such missing information might be due to a number of biologically interesting reasons such as a deletion, coverage below a specific snp calling threshold or mixed alleles. Accessory sites not containing snps, hereon referred to as 'invariant accessory sites' are often overlooked in comparative genomic studies, however they may add an additional level of information alongside that of snps in core and accessory sites.
+Accessory sites are positions in an alignment in which one or more taxa have missing information that is generally denoted by 'N'. Such missing information might be due to a number of biologically interesting reasons such as a deletion, coverage below a specific snp calling threshold or mixed alleles. Accessory sites not containing snps, hereon referred to as 'invariant accessory sites' are often overlooked in comparative genomic studies, however they may add an additional level of information alongside that of snps in core and accessory sites. snp-sites (https://github.com/sanger-pathogens/snp-sites) is a tool that rapidly extracts core and accessory snp sites from whole genome alignments, however it currently does not allow for the extraction of invariant accessory sites. accessory-sites builds upon the speed of snp-sites to extract invariant accessory sites from whole genome alignments.
 
 # Usage
 $ sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_FORMAT] [OUTFILE_DATA]  
