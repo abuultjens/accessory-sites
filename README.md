@@ -2,7 +2,9 @@
 A script to extract accessory sites from whole genome alignments
 
 # Usage
-$ sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_FORMAT] [OUTFILE_DATA]   
+$ sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_FORMAT] [OUTFILE_DATA]  
+
+* note that the command must have the arguments in the exact order as specified above
 
 # Options
 [OUTFILE_FORMAT] can be either 'table' or 'fasta'   
