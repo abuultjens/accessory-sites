@@ -10,7 +10,7 @@ Accessory sites are positions in an alignment in which one or more taxa have mis
 # Usage
 $ sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_FORMAT] [OUTFILE_DATA]  
 
-* note that the command options must be in the arguments in the exact order as specified above as they are treated as positional arguments
+* note that the command options must be in the exact order as specified above as they are treated as positional arguments
 
 # Options
 * [OUTFILE_FORMAT] can be either 'table' or 'fasta'   
