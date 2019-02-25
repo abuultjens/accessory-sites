@@ -7,8 +7,8 @@ $ sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_FORMAT] [OUTFILE_DATA]
 * note that the command must have the arguments in the exact order as specified above
 
 # Options
-[OUTFILE_FORMAT] can be either 'table' or 'fasta'   
-[OUTFILE_DATA] can be either 'all_sites' or 'only_invariant_accessory_sites'
+* [OUTFILE_FORMAT] can be either 'table' or 'fasta'   
+* [OUTFILE_DATA] can be either 'all_sites' or 'only_invariant_accessory_sites'
 
 # How it works
 accessory-sites tricks the incredibly fast snp-sites into thinking that invariant accessory positions actually contain snps. This is useful as snp-sites then rapidly extracts the fake snp sites which are then converted back to being invariant accessory sites and concatinated to the original variant core and accessory sites extracted by snp-sites.
