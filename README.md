@@ -27,7 +27,7 @@ accessory-sites tricks the incredibly fast snp-sites into thinking that invarian
 
 
 
-![alt text](https://github.com/abuultjens/accessory-sites/blob/master/snp-sites.png)
+![alt text](https://github.com/abuultjens/accessory-sites/blob/master/snp-sites_output.png)
 
 
 
