@@ -29,7 +29,7 @@ snp-sites
 
 
 
-![alt text](https://github.com/abuultjens/accessory-sites/blob/master/accessory.png)
+![alt text](https://github.com/abuultjens/accessory-sites/blob/master/acc_output.png)
 
 
 
