@@ -1,5 +1,5 @@
 # accessory-sites
-A script to extract accessory sites from whole genome alignments
+A script to extract invariant accessory sites from whole genome alignments
 
 # Author
 Andrew Buultjens
