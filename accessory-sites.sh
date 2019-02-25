@@ -3,98 +3,159 @@
 # accessory-sites.sh
 #######################################################################
 
-# sh accessory-sites.sh [aln.fa] [prefix]
+# sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_FORMAT] [OUTFILE_DATA]
+
+#------------------------------------------------
 
 ALIGNMENT=${1}
 PREFIX=${2}
 
+OUTFILE_FORMAT=${3}
+# table
+# fasta
+
+OUTFILE_DATA=${4}
+# only_invariant_accessory_sites
+# all_sites
+
+#------------------------------------------------
+
+# generate random prefix for all tmp files
+RAND_1=`echo $((1 + RANDOM % 100))`
+RAND_2=`echo $((100 + RANDOM % 200))`
+RAND_3=`echo $((200 + RANDOM % 300))`
+RAND=`echo "${RAND_1}${RAND_2}${RAND_3}"`
+
+#------------------------------------------------
+# make files for original alignment
+
 # make files for the original alignment
-snp-sites -v ${ALIGNMENT} > original.vcf
-vcf-to-tab < original.vcf > original.tab
+snp-sites -v ${ALIGNMENT} > ${RAND}_tmp_original.vcf
+vcf-to-tab < ${RAND}_tmp_original.vcf > ${RAND}_tmp_original.tab
 
 # get chr col
-cat original.tab | grep -v "#" | cut -f 1 > original_CHR.txt
+cat ${RAND}_tmp_original.tab | grep -v "#" | cut -f 1 > ${RAND}_tmp_original_CHR.txt
+
+# get the number of positions in table
+original_LC=`cat ${RAND}_tmp_original.tab | grep -v "#" | wc -l | awk '{print $1}'`
 
 # get pos col
-cat original.tab | grep -v "#" | cut -f 2 > original_POS.txt
+cat ${RAND}_tmp_original.tab | grep -v "#" | cut -f 2 > ${RAND}_tmp_original_POS.txt
 
 # make a gff file
-tr '1' 's' < original_CHR.txt > original_s.txt
-tr '1' 'S' < original_CHR.txt > original_S.txt
-tr '1' '.' < original_CHR.txt > original_dot.txt
-tr '1' '0' < original_CHR.txt > original_0.txt
-cat original.tab | grep -v "#" | cut -f 3- | tr '*' 'N' | tr -d '/' | tr '\t' ',' > original_attribute.txt
-echo "###gff-version 3" > original.gff
-paste original_CHR.txt original_s.txt original_S.txt original_POS.txt original_POS.txt original_dot.txt original_dot.txt original_0.txt original_attribute.txt >> original.gff
+seq 1 ${original_LC} | awk '{print "s"}'  > ${RAND}_tmp_original_s.txt
+seq 1 ${original_LC} | awk '{print "S"}'  > ${RAND}_tmp_original_S.txt
+seq 1 ${original_LC} | awk '{print "."}'  > ${RAND}_tmp_original_dot.txt
+seq 1 ${original_LC} | awk '{print "0"}'  > ${RAND}_tmp_original_0.txt
+cat original.tab | grep -v "#" | cut -f 3- | tr '*' 'N' | tr -d '/' | tr '\t' ',' > ${RAND}_tmp_original_attribute.txt
+echo "###gff-version 3" > ${RAND}_tmp_original.gff
+paste ${RAND}_tmp_original_CHR.txt ${RAND}_tmp_original_s.txt ${RAND}_tmp_original_S.txt ${RAND}_tmp_original_POS.txt ${RAND}_tmp_original_POS.txt ${RAND}_tmp_original_dot.txt ${RAND}_tmp_original_dot.txt ${RAND}_tmp_original_0.txt ${RAND}_tmp_original_attribute.txt >> ${RAND}_tmp_original.gff
+
+#------------------------------------------------
+# make files for fake alignments and compare to original table
 
 # replace N with fake snp
 #echo "replacing Ns"
-tr 'N' 'A' < ${ALIGNMENT} > fake_A.fa &
-tr 'N' 'G' < ${ALIGNMENT} > fake_G.fa &
-tr 'N' 'C' < ${ALIGNMENT} > fake_C.fa &
-tr 'N' 'T' < ${ALIGNMENT} > fake_T.fa &
+tr 'N' 'A' < ${ALIGNMENT} > ${RAND}_tmp_fake_A.fa &
+tr 'N' 'G' < ${ALIGNMENT} > ${RAND}_tmp_fake_G.fa &
+tr 'N' 'C' < ${ALIGNMENT} > ${RAND}_tmp_fake_C.fa &
+tr 'N' 'T' < ${ALIGNMENT} > ${RAND}_tmp_fake_T.fa &
 
 wait
 
 # run snp-sites
 #echo "snp-sites"
-snp-sites -v fake_A.fa > fake_A.vcf &
-snp-sites -v fake_G.fa > fake_G.vcf &
-snp-sites -v fake_C.fa > fake_C.vcf &
-snp-sites -v fake_T.fa > fake_T.vcf &
+snp-sites -v ${RAND}_tmp_fake_A.fa > ${RAND}_tmp_fake_A.vcf &
+snp-sites -v ${RAND}_tmp_fake_G.fa > ${RAND}_tmp_fake_G.vcf &
+snp-sites -v ${RAND}_tmp_fake_C.fa > ${RAND}_tmp_fake_C.vcf &
+snp-sites -v ${RAND}_tmp_fake_T.fa > ${RAND}_tmp_fake_T.vcf &
 
 wait
 
 # run vcf-tools
 #echo "vcf tools"
-vcf-to-tab < fake_A.vcf > fake_A.tab &
-vcf-to-tab < fake_G.vcf > fake_G.tab &
-vcf-to-tab < fake_C.vcf > fake_C.tab &
-vcf-to-tab < fake_T.vcf > fake_T.tab &
+vcf-to-tab < ${RAND}_tmp_fake_A.vcf > ${RAND}_tmp_fake_A.tab &
+vcf-to-tab < ${RAND}_tmp_fake_G.vcf > ${RAND}_tmp_fake_G.tab &
+vcf-to-tab < ${RAND}_tmp_fake_C.vcf > ${RAND}_tmp_fake_C.tab &
+vcf-to-tab < ${RAND}_tmp_fake_T.vcf > ${RAND}_tmp_fake_T.tab &
 
 wait
 
-
-
 # if file already exists then delete it to prevent carry over from a previous run
-if ls found_with_fake.txt 1> /dev/null 2>&1; then
-    rm found_with_fake.txt
+if ls ${RAND}_tmp_found_with_fake.txt 1> /dev/null 2>&1; then
+    rm ${RAND}_tmp_found_with_fake.txt
 fi
 
 # loop through DNA alphabet
 for FAKE in A G C T; do
 
     # get fake chr col
-    cat fake_${FAKE}.tab | grep -v "#" | cut -f 1 > fake_${FAKE}_CHR.txt
+    cat ${RAND}_tmp_fake_${FAKE}.tab | grep -v "#" | cut -f 1 > ${RAND}_tmp_fake_${FAKE}_CHR.txt
+    
+    # get the number of positions in table
+    fake_LC=`cat ${RAND}_tmp_fake_${FAKE}.tab | grep -v "#" | wc -l | awk '{print $1}'`
     
     # get fake pos col
-    cat fake_${FAKE}.tab | grep -v "#" | cut -f 2 > fake_${FAKE}_POS.txt
+    cat ${RAND}_tmp_fake_${FAKE}.tab | grep -v "#" | cut -f 2 > ${RAND}_tmp_fake_${FAKE}_POS.txt
 
     # make a gff file
-    tr '1' 's' < fake_${FAKE}_CHR.txt > fake_${FAKE}_s.txt
-    tr '1' 'S' < fake_${FAKE}_CHR.txt > fake_${FAKE}_S.txt
-    tr '1' '.' < fake_${FAKE}_CHR.txt > fake_${FAKE}_dot.txt
-    tr '1' '0' < fake_${FAKE}_CHR.txt > fake_${FAKE}_0.txt
-    cat fake_${FAKE}.tab | grep -v "#" | cut -f 3- | tr '*' 'N' | tr -d '/' | tr '\t' ',' > fake_${FAKE}_attribute.txt
-    echo "###gff-version 3" > fake_${FAKE}.gff
-    paste fake_${FAKE}_CHR.txt fake_${FAKE}_s.txt fake_${FAKE}_S.txt fake_${FAKE}_POS.txt fake_${FAKE}_POS.txt fake_${FAKE}_dot.txt fake_${FAKE}_dot.txt fake_${FAKE}_0.txt fake_${FAKE}_attribute.txt >> fake_${FAKE}.gff
+    seq 1 ${fake_LC} | awk '{print "s"}' > ${RAND}_tmp_fake_${FAKE}_s.txt
+    seq 1 ${fake_LC} | awk '{print "S"}' > ${RAND}_tmp_fake_${FAKE}_S.txt
+    seq 1 ${fake_LC} | awk '{print "."}' > ${RAND}_tmp_fake_${FAKE}_dot.txt
+    seq 1 ${fake_LC} | awk '{print "0"}' > ${RAND}_tmp_fake_${FAKE}_0.txt
+    cat ${RAND}_tmp_fake_${FAKE}.tab | grep -v "#" | cut -f 3- | tr '*' 'N' | tr -d '/' | tr '\t' ',' > ${RAND}_tmp_fake_${FAKE}_attribute.txt
+    echo "###gff-version 3" > ${RAND}_tmp_fake_${FAKE}.gff
+    paste ${RAND}_tmp_fake_${FAKE}_CHR.txt ${RAND}_tmp_fake_${FAKE}_s.txt ${RAND}_tmp_fake_${FAKE}_S.txt ${RAND}_tmp_fake_${FAKE}_POS.txt ${RAND}_tmp_fake_${FAKE}_POS.txt ${RAND}_tmp_fake_${FAKE}_dot.txt ${RAND}_tmp_fake_${FAKE}_dot.txt ${RAND}_tmp_fake_${FAKE}_0.txt ${RAND}_tmp_fake_${FAKE}_attribute.txt >> ${RAND}_tmp_fake_${FAKE}.gff
 
     # find del variants that are not in the original snp-sites output
-    bedtools intersect -v -a fake_${FAKE}.gff -b original.gff > out.gff
+    bedtools intersect -v -a ${RAND}_tmp_fake_${FAKE}.gff -b ${RAND}_tmp_original.gff > ${RAND}_tmp_out.gff
     
     # cut off columns of interest and convert fake snps back to Ns
-    cat out.gff | cut -f 1,4,9 | tr ',' '\t' | tr "${FAKE}" 'N' >> found_with_fake.txt
+    cat ${RAND}_tmp_out.gff | cut -f 1,4,9 | tr ',' '\t' | tr "${FAKE}" 'N' >> ${RAND}_tmp_found_with_fake.txt
 
 done
 
 # make a non-redundant list of gff hits
-sort found_with_fake.txt | uniq > nr_found_with_fake.txt
+sort ${RAND}_tmp_found_with_fake.txt | uniq > ${RAND}_tmp_nr_found_with_fake.txt
 
-# reformat the original fasta data
-cat original.tab | tr '*' 'N' | tr -d '/' > original_tmp.tab
+# reformat the original data
+cat ${RAND}_tmp_original.tab | tr '*' 'N' | tr -d '/' > ${RAND}_tmp_original_tmp.tab
 
-# cat the snps and dels to outfile
-cat original_tmp.tab nr_found_with_fake.txt | cut -f 1,2,4- > ${PREFIX}.tab
+#-----------------------------------------------------
+# select which data to include in outfile
+
+# output only invariant accessory sites
+if [ "${OUTFILE_DATA}" == "only_invariant_accessory_sites" ]; then
+    cat ${RAND}_tmp_original_tmp.tab | grep "#" > ${RAND}_tmp_HEAD.txt
+    cat ${RAND}_tmp_HEAD.txt ${RAND}_tmp_nr_found_with_fake.txt | cut -f 1,2,4- > ${RAND}_tmp_${PREFIX}.tab
+fi
+
+# output snps and invariant accessory sites
+if [ "${OUTFILE_DATA}" == "all_sites" ]; then
+    cat ${RAND}_tmp_original_tmp.tab ${RAND}_tmp_nr_found_with_fake.txt | cut -f 1,2,4- > ${RAND}_tmp_${PREFIX}.tab
+fi
+
+#-----------------------------------------------------
+# select outfile format
+
+# output table
+if [ "${OUTFILE_FORMAT}" == "table" ]; then
+    mv ${RAND}_tmp_${PREFIX}.tab ${PREFIX}.tab
+fi
+
+# output fasta
+if [ "${OUTFILE_FORMAT}" == "fasta" ]; then
+    # convert table to fasta
+    NAMES_COL=`cat ${RAND}_tmp_${PREFIX}.tab | datamash transpose -H | grep -v "CHROM" | grep -v "POS" | cut -f 1 > ${RAND}_tmp_NAMES_COL.txt`
+    SEQ_COL=`cat ${RAND}_tmp_${PREFIX}.tab | datamash transpose -H | grep -v "CHROM" | grep -v "POS" | cut -f 2- | tr -d '\t' > ${RAND}_tmp_SEQ_COL.txt`
+    paste ${RAND}_tmp_NAMES_COL.txt ${RAND}_tmp_SEQ_COL.txt | awk '$0=">"$0' | tr '\t' '\n' > ${PREFIX}.fa
+fi
+
+#-----------------------------------------------------
+
+# remove all tmp files
+rm ${RAND}_tmp_*
+
 
 N_SNPS=`cat original_tmp.tab | grep -v "#" | wc -l`
 N_DELS=`cat nr_found_with_fake.txt | wc -l`
@@ -105,9 +166,10 @@ N_DELS=`cat nr_found_with_fake.txt | wc -l`
 #echo "found ${N_DELS} deletions"
 #echo "--------------------------------"
 
-datamash transpose -H < ${PREFIX}.tab | grep -v "#" | grep -v "POS" > ${PREFIX}.tr.tab
+#datamash transpose -H < ${PREFIX}.tab | grep -v "#" | grep -v "POS" > ${PREFIX}.tr.tab
 
 #echo ""
 #echo "--------------------------------"
 #echo "outfile:"
-cat ${PREFIX}.tab | datamash transpose -H | grep -v "CHROM"
+#cat ${PREFIX}.tab | datamash transpose -H | grep -v "CHROM"
+
