@@ -3,20 +3,51 @@
 # accessory-sites.sh
 #######################################################################
 
-# sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_FORMAT] [OUTFILE_DATA]
+# sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_DATA]
 
 #------------------------------------------------
 
 ALIGNMENT=${1}
+#ALIGNMENT=test.fa
+
+# display help
+if [ "${ALIGNMENT}" == "help" ]; then
+    echo ""
+    echo "--------------------------------------------------------------------"
+    echo "accessory-sites   Andrew Buultjens 2019: buultjensa@gmail.com"
+    echo "--------------------------------------------------------------------"
+    echo ""
+    echo "VERSION:"
+    echo "v1.02"
+    echo ""
+    echo "ABOUT:"
+    echo "This program finds invariant accessory sites from a multi FASTA alignment file."
+    echo ""
+    echo "USAGE:"
+    echo "sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_DATA]"
+    echo ""
+    echo "OPTIONS:"
+    echo "[OUTFILE_DATA] can be either 'all_sites' or 'only_invariant_accessory_sites'"
+    echo "*note that the command options must be in the exact order as specified above as they are treated as positional arguments"    
+    echo ""
+    echo "EXAMPLE:"
+    echo "extracting only invariant accessory sites"
+    echo "sh accessory-sites.sh inputfile.aln PREFIX only_invariant_accessory_sites"
+    echo ""
+    echo "extracting invariant accessory sites and all snp sites"
+    echo "sh accessory-sites.sh inputfile.aln PREFIX all_sites"
+    echo ""
+    
+    # crash script and exit
+    exit 1
+fi
+
 PREFIX=${2}
+#PREFIX=OUT
 
-OUTFILE_FORMAT=${3}
-# table
-# fasta
-
-OUTFILE_DATA=${4}
-# only_invariant_accessory_sites
-# all_sites
+OUTFILE_DATA=${3}
+#OUTFILE_DATA=only_invariant_accessory_sites
+#OUTFILE_DATA=all_sites
 
 #------------------------------------------------
 
@@ -136,29 +167,28 @@ if [ "${OUTFILE_DATA}" == "all_sites" ]; then
 fi
 
 #-----------------------------------------------------
-# select outfile format
+# make outfiles
 
 # output table
-if [ "${OUTFILE_FORMAT}" == "table" ]; then
-    mv ${RAND}_tmp_${PREFIX}.tab ${PREFIX}.tab
-fi
+cp ${RAND}_tmp_${PREFIX}.tab ${PREFIX}.tab
 
 # output fasta
-if [ "${OUTFILE_FORMAT}" == "fasta" ]; then
-    # convert table to fasta
-    NAMES_COL=`cat ${RAND}_tmp_${PREFIX}.tab | datamash transpose -H | grep -v "CHROM" | grep -v "POS" | cut -f 1 > ${RAND}_tmp_NAMES_COL.txt`
-    SEQ_COL=`cat ${RAND}_tmp_${PREFIX}.tab | datamash transpose -H | grep -v "CHROM" | grep -v "POS" | cut -f 2- | tr -d '\t' > ${RAND}_tmp_SEQ_COL.txt`
-    paste ${RAND}_tmp_NAMES_COL.txt ${RAND}_tmp_SEQ_COL.txt | awk '$0=">"$0' | tr '\t' '\n' > ${PREFIX}.fa
-fi
+NAMES_COL=`cat ${RAND}_tmp_${PREFIX}.tab | datamash transpose -H | grep -v "CHROM" | grep -v "POS" | cut -f 1 > ${RAND}_tmp_NAMES_COL.txt`
+SEQ_COL=`cat ${RAND}_tmp_${PREFIX}.tab | datamash transpose -H | grep -v "CHROM" | grep -v "POS" | cut -f 2- | tr -d '\t' > ${RAND}_tmp_SEQ_COL.txt`
+paste ${RAND}_tmp_NAMES_COL.txt ${RAND}_tmp_SEQ_COL.txt | awk '$0=">"$0' | tr '\t' '\n' > ${PREFIX}.fa
+
 
 #-----------------------------------------------------
+#echo "OUTFILE_DATA: ${OUTFILE_DATA}"
+#cat ${RAND}_tmp_original_tmp.tab
+
 
 # remove all tmp files
 rm ${RAND}_tmp_*
 
 
-N_SNPS=`cat original_tmp.tab | grep -v "#" | wc -l`
-N_DELS=`cat nr_found_with_fake.txt | wc -l`
+#N_SNPS=`cat original_tmp.tab | grep -v "#" | wc -l`
+#N_DELS=`cat nr_found_with_fake.txt | wc -l`
 #echo ""
 #echo "--------------------------------"
 #echo "summary:"
