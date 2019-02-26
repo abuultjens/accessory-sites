@@ -30,6 +30,58 @@ Basically, snp-sites is first run with the original alignment and the sites extr
 
 # Example
 
+**original alignment:**   
+```
+cat test.fa
+>TAXA_A
+ATTN
+>TAXA_B
+AGTA
+>TAXA_C
+AGAA
+>TAXA_D
+AGNN
+```
+**The alignment contains:**   
+Site 1 = core position no snp (no information)   
+Site 2 = core position with snp (useful information)   
+Site 3 = accessory position with snp (useful information)   
+Site 4 = accessory position with no snp (useful information)   
+
+**output from snp-sites:**   
+```
+snp-sites -v test.fa | vcf-to-tab | tr -d '/' | tr '*' 'N' | cut -f 1,2,4- 
+#CHROM	POS	TAXA_A	TAXA_B	TAXA_C	TAXA_D
+1	2	T	G	G	G
+1	3	T	T	A	N
+```
+**snp-sites kept:**  
+Site 2 = core position with snp   
+Site 3 = accessory position with snp   
+
+**snp-sites removed:**   
+Site 1 = core position no snp  
+Site 4 = accessory position with no snp  
+
+**run accessory-sites:**   
+```
+sh accessory-sites.sh test.fa OUT table all_sites
+```
+inspect table output
+```
+cat OUT.tab
+#CHROM	POS	TAXA_A	TAXA_B	TAXA_C	TAXA_D
+1	2	T	G	G	G
+1	3	T	T	A	N
+1	4	N	A	A	N
+```
+
+
+
+
+
+
+
 ![alt text](https://github.com/abuultjens/accessory-sites/blob/master/aln-new.png)
 
 
