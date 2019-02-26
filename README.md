@@ -21,8 +21,6 @@ accessory-sites tricks the incredibly fast snp-sites into thinking that invarian
 
 Basically, snp-sites is first run with the original alignment and the sites extracted are recorded. All 'N' in the alignment are then replaced with 'A', effectively introducing a fake snp, and this modified alignment is run through snp-sites with any new sites compared to the original run identified. Novel sites are then extracted, 'A' replaced with the original 'N' and the invariant accessory positions are added to the outfile. This process is repeated for 'G', 'C' and 'T' so that all invariant accessory sites are obtained.
 
-
-
 # Dependencies
 * vcf-tools     
 * bedtools     
@@ -63,9 +61,22 @@ Site 3 = accessory position with snp
 Site 1 = core position no snp  
 Site 4 = accessory position with no snp  
 
-**run accessory-sites:**   
+# Example 1: run accessory-sites to extract invariant accessory sites and all snp sites:
+
 ```
-sh accessory-sites.sh test.fa OUT table all_sites
+sh accessory-sites.sh test.fa OUT all_sites
+```
+inspect fasta output
+```
+cat OUT.fa
+>TAXA_A
+TTN
+>TAXA_B
+GTA
+>TAXA_C
+GAA
+>TAXA_D
+GNN
 ```
 inspect table output
 ```
@@ -75,7 +86,28 @@ cat OUT.tab
 1	3	T	T	A	N
 1	4	N	A	A	N
 ```
-
+# Example 2: run accessory-sites to extract only invariant accessory sites:
+```
+sh accessory-sites.sh test.fa OUT only_invariant_accessory_sites
+```
+inspect fasta output
+```
+cat OUT.fa
+>TAXA_A
+N
+>TAXA_B
+A
+>TAXA_C
+A
+>TAXA_D
+N
+```
+inspect table output
+```
+cat OUT.tab
+#CHROM	POS	TAXA_A	TAXA_B	TAXA_C	TAXA_D
+1	4	N	A	A	N
+```
 
 
 
