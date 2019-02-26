@@ -8,12 +8,11 @@ Andrew Buultjens
 Accessory sites are positions in an alignment in which one or more taxa have missing information that is generally denoted by 'N'. Such missing information might be due to a number of biologically interesting reasons such as a deletion, coverage below a specific snp calling threshold or mixed alleles. Accessory sites not containing snps, hereon referred to as 'invariant accessory sites' are often overlooked in comparative genomic studies, however they may add an additional level of information alongside that of snps in core and accessory sites. snp-sites (https://github.com/sanger-pathogens/snp-sites) is a tool that rapidly extracts core and accessory snp sites from whole genome alignments, however it currently does not allow for the extraction of invariant accessory sites. accessory-sites builds upon the speed of snp-sites to extract invariant accessory sites from whole genome alignments.
 
 # Usage
-$ sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_FORMAT] [OUTFILE_DATA]  
+$ sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_DATA]  
 
 * note that the command options must be in the exact order as specified above as they are treated as positional arguments
 
 # Options
-* [OUTFILE_FORMAT] can be either 'table' or 'fasta'   
 * [OUTFILE_DATA] can be either 'all_sites' or 'only_invariant_accessory_sites'
 
 # How it works
@@ -109,26 +108,7 @@ cat OUT.tab
 1	4	N	A	A	N
 ```
 
-
-
-
-
-
-![alt text](https://github.com/abuultjens/accessory-sites/blob/master/aln-new.png)
-
-
-
-
-
-
-![alt text](https://github.com/abuultjens/accessory-sites/blob/master/snp-sites_output.png)
-
-
-
-![alt text](https://github.com/abuultjens/accessory-sites/blob/master/output.png)
-
-
-
-
-
+# Removing a reference sequence from a multi-fasta file
+To remove a specific entry from a multi-fasta file (eg. 'Reference') use ref-remover:
+https://github.com/abuultjens/ref-remover
 
