@@ -52,13 +52,13 @@ snp-sites -v test.fa | vcf-to-tab | tr -d '/' | tr '*' 'N' | cut -f 1,2,4-
 1	2	T	G	G	G
 1	3	T	T	A	N
 ```
-**snp-sites kept:**  
+**sites kept:**  
 Site 2 = core position with snp   
 Site 3 = accessory position with snp   
 
-**snp-sites removed:**   
+**sites removed:**   
 Site 1 = core position no snp  
-Site 4 = accessory position with no snp  
+Site 4 = invariant accessory position (accessory position with no snp)  
 
 # Example 1: run accessory-sites to extract invariant accessory sites and all snp sites:
 
@@ -85,6 +85,14 @@ cat OUT.tab
 1	3	T	T	A	N
 1	4	N	A	A	N
 ```
+**sites kept:**  
+Site 2 = core position with snp   
+Site 3 = accessory position with snp   
+Site 4 = invariant accessory position (accessory position with no snp)  
+
+**sites removed:**   
+Site 1 = core position no snp  
+
 # Example 2: run accessory-sites to extract only invariant accessory sites:
 ```
 sh accessory-sites.sh test.fa OUT only_invariant_accessory_sites
@@ -107,6 +115,13 @@ cat OUT.tab
 #CHROM	POS	TAXA_A	TAXA_B	TAXA_C	TAXA_D
 1	4	N	A	A	N
 ```
+**sites kept:**  
+Site 4 = invariant accessory position (accessory position with no snp)  
+
+**sites removed:**   
+Site 1 = core position no snp  
+Site 2 = core position with snp   
+Site 3 = accessory position with snp  
 
 # Removing a reference sequence from a multi-fasta file
 To remove a specific entry from a multi-fasta file (eg. 'Reference') use ref-remover:
