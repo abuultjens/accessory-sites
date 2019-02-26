@@ -53,10 +53,10 @@ snp-sites -v test.fa | vcf-to-tab | tr -d '/' | tr '*' 'N' | cut -f 1,2,4-
 1	3	T	T	A	N
 ```
 **sites kept:**  
-Site 2 = core position with snp   
-Site 3 = accessory position with snp   
+Site 2 = core position with snp  
+Site 3 = accessory position with snp  
 
-**sites removed:**   
+**sites removed:**  
 Site 1 = core position no snp  
 Site 4 = invariant accessory position (accessory position with no snp)  
 
@@ -86,11 +86,11 @@ cat OUT.tab
 1	4	N	A	A	N
 ```
 **sites kept:**  
-Site 2 = core position with snp   
-Site 3 = accessory position with snp   
+Site 2 = core position with snp  
+Site 3 = accessory position with snp  
 Site 4 = invariant accessory position (accessory position with no snp)  
 
-**sites removed:**   
+**sites removed:**  
 Site 1 = core position no snp  
 
 # Example 2: run accessory-sites to extract only invariant accessory sites:
