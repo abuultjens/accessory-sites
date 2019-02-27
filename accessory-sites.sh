@@ -7,9 +7,9 @@
 
 #------------------------------------------------
 
-ALIGNMENT=${1}
+#ALIGNMENT=${1}
 #ALIGNMENT=test.fa
-#ALIGNMENT=6_sc4.3.6.full.clean.WO-_noref.aln
+ALIGNMENT=6_sc4.3.6.full.clean.WO-_noref.aln
 
 # display help
 if [ "${ALIGNMENT}" == "help" ]; then
@@ -43,12 +43,25 @@ if [ "${ALIGNMENT}" == "help" ]; then
     exit 1
 fi
 
-PREFIX=${2}
-#PREFIX=OUT
+#PREFIX=${2}
+PREFIX=OUT
 
-OUTFILE_DATA=${3}
-#OUTFILE_DATA=only_invariant_accessory_sites
+#OUTFILE_DATA=${3}
+OUTFILE_DATA=only_invariant_accessory_sites
 #OUTFILE_DATA=all_sites
+
+#------------------------------------------------
+
+# check that infile exists
+if [ -e "${ALIGNMENT}" ] 
+then
+    echo ""
+else
+    # print error
+    echo "ERROR: cannot find ${ALIGNMENT}"  
+    # crash script and exit
+    exit 1
+fi
 
 #------------------------------------------------
 
@@ -59,6 +72,7 @@ RAND_3=`echo $((200 + RANDOM % 300))`
 RAND=`echo "${RAND_1}${RAND_2}${RAND_3}"`
 
 #------------------------------------------------
+
 # make files for original alignment
 
 # make files for the original alignment
@@ -84,6 +98,7 @@ echo "###gff-version 3" > ${RAND}_tmp_original.gff
 paste ${RAND}_tmp_original_CHR.txt ${RAND}_tmp_original_s.txt ${RAND}_tmp_original_S.txt ${RAND}_tmp_original_POS.txt ${RAND}_tmp_original_POS.txt ${RAND}_tmp_original_dot.txt ${RAND}_tmp_original_dot.txt ${RAND}_tmp_original_0.txt ${RAND}_tmp_original_attribute.txt >> ${RAND}_tmp_original.gff
 
 #------------------------------------------------
+
 # make files for fake alignments and compare to original table
 
 # replace N with fake snp
@@ -154,6 +169,7 @@ sort ${RAND}_tmp_found_with_fake.txt | uniq > ${RAND}_tmp_nr_found_with_fake.txt
 cat ${RAND}_tmp_original.tab | tr '*' 'N' | tr -d '/' > ${RAND}_tmp_original_tmp.tab
 
 #-----------------------------------------------------
+
 # select which data to include in outfile
 
 # output only invariant accessory sites
@@ -168,6 +184,7 @@ if [ "${OUTFILE_DATA}" == "all_sites" ]; then
 fi
 
 #-----------------------------------------------------
+
 # make outfiles
 
 # output table
