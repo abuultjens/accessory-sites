@@ -26,9 +26,9 @@ accessory-sites tricks the incredibly fast snp-sites into thinking that invarian
 Basically, snp-sites is first run with the original alignment and the sites extracted are recorded. All 'N' in the alignment are then replaced with 'A', effectively introducing a fake snp, and this modified alignment is run through snp-sites with any new sites compared to the original run identified. Novel sites are then extracted, 'A' replaced with the original 'N' and the invariant accessory positions are added to the outfile. This process is repeated for 'G', 'C' and 'T' so that all invariant accessory sites are obtained.
 
 # Dependencies
-* vcf-tools     
-* bedtools     
-* snp-sites    
+* vcf-tools  
+* bedtools (tested with v2.24.0)  
+* snp-sites (tested with 2.4.1)    
 
 # Example
 
