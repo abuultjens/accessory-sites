@@ -9,6 +9,7 @@
 
 ALIGNMENT=${1}
 #ALIGNMENT=test.fa
+#ALIGNMENT=6_sc4.3.6.full.clean.WO-_noref.aln
 
 # display help
 if [ "${ALIGNMENT}" == "help" ]; then
@@ -78,7 +79,7 @@ seq 1 ${original_LC} | awk '{print "s"}'  > ${RAND}_tmp_original_s.txt
 seq 1 ${original_LC} | awk '{print "S"}'  > ${RAND}_tmp_original_S.txt
 seq 1 ${original_LC} | awk '{print "."}'  > ${RAND}_tmp_original_dot.txt
 seq 1 ${original_LC} | awk '{print "0"}'  > ${RAND}_tmp_original_0.txt
-cat original.tab | grep -v "#" | cut -f 3- | tr '*' 'N' | tr -d '/' | tr '\t' ',' > ${RAND}_tmp_original_attribute.txt
+cat ${RAND}_tmp_original.tab | grep -v "#" | cut -f 3- | tr '*' 'N' | tr -d '/' | tr '\t' ',' > ${RAND}_tmp_original_attribute.txt
 echo "###gff-version 3" > ${RAND}_tmp_original.gff
 paste ${RAND}_tmp_original_CHR.txt ${RAND}_tmp_original_s.txt ${RAND}_tmp_original_S.txt ${RAND}_tmp_original_POS.txt ${RAND}_tmp_original_POS.txt ${RAND}_tmp_original_dot.txt ${RAND}_tmp_original_dot.txt ${RAND}_tmp_original_0.txt ${RAND}_tmp_original_attribute.txt >> ${RAND}_tmp_original.gff
 
@@ -179,27 +180,9 @@ paste ${RAND}_tmp_NAMES_COL.txt ${RAND}_tmp_SEQ_COL.txt | awk '$0=">"$0' | tr '\
 
 
 #-----------------------------------------------------
-#echo "OUTFILE_DATA: ${OUTFILE_DATA}"
-#cat ${RAND}_tmp_original_tmp.tab
-
 
 # remove all tmp files
 rm ${RAND}_tmp_*
 
-
-#N_SNPS=`cat original_tmp.tab | grep -v "#" | wc -l`
-#N_DELS=`cat nr_found_with_fake.txt | wc -l`
-#echo ""
-#echo "--------------------------------"
-#echo "summary:"
-#echo "found ${N_SNPS} SNPs"
-#echo "found ${N_DELS} deletions"
-#echo "--------------------------------"
-
-#datamash transpose -H < ${PREFIX}.tab | grep -v "#" | grep -v "POS" > ${PREFIX}.tr.tab
-
-#echo ""
-#echo "--------------------------------"
-#echo "outfile:"
-#cat ${PREFIX}.tab | datamash transpose -H | grep -v "CHROM"
+#-----------------------------------------------------
 
