@@ -52,15 +52,21 @@ OUTFILE_DATA=${3}
 #OUTFILE_DATA=only_invariant_accessory_sites
 #OUTFILE_DATA=all_sites
 
+echo "Options:" > log.txt
+echo "ALIGNMENT: ${ALIGNMENT}" >> log.txt
+echo "PREFIX: ${PREFIX}" >> log.txt
+echo "OUTFILE_DATA: ${OUTFILE_DATA}" >> log.txt
+
 #------------------------------------------------
 
 # check that infile exists
 if [ -e "${ALIGNMENT}" ] 
 then
-    echo ""
+    echo "infile exitst" >> log.txt
 else
     # print error
     echo "ERROR: cannot find ${ALIGNMENT}"  
+    echo "infile does not exitst" >> log.txt
     # crash script and exit
     exit 1
 fi
@@ -72,11 +78,14 @@ RAND_1=`echo $((1 + RANDOM % 100))`
 RAND_2=`echo $((100 + RANDOM % 200))`
 RAND_3=`echo $((200 + RANDOM % 300))`
 RAND=`echo "${RAND_1}${RAND_2}${RAND_3}"`
+echo "random prefix: ${RAND}" >> log.txt
 
 #------------------------------------------------
 
 # make files for the original alignment
 snp-sites -v ${ALIGNMENT} > ${RAND}_tmp_original.vcf
+TMP=`wc -l ${RAND}_tmp_original.vcf | awk '{print $1}'`
+echo "made ${RAND}_tmp_original.vcf, ${TMP} lines" >> log.txt
 
 # check if snps were found in original alignment
 WC=`wc -l ${RAND}_tmp_original.vcf | awk '{print $1}'`
@@ -89,6 +98,8 @@ if [ "$WC" == "0" ]; then
 ####### IF YES CORE SNPS
 else
     vcf-to-tab < ${RAND}_tmp_original.vcf > ${RAND}_tmp_original.tab
+    TMP=`wc -l ${RAND}_tmp_original.tab | awk '{print $1}'`
+    echo "made ${RAND}_tmp_original.tab, ${TMP} lines" >> log.txt
     
     # get chr col
     cat ${RAND}_tmp_original.tab | grep -v "#" | cut -f 1 > ${RAND}_tmp_original_CHR.txt
@@ -119,6 +130,8 @@ tr 'N' 'A' < ${ALIGNMENT} > ${RAND}_tmp_fake_A.fa &
 tr 'N' 'G' < ${ALIGNMENT} > ${RAND}_tmp_fake_G.fa &
 tr 'N' 'C' < ${ALIGNMENT} > ${RAND}_tmp_fake_C.fa &
 tr 'N' 'T' < ${ALIGNMENT} > ${RAND}_tmp_fake_T.fa &
+echo "made fake alignments" >> log.txt
+
 
 wait
 
@@ -128,11 +141,17 @@ snp-sites -v ${RAND}_tmp_fake_G.fa > ${RAND}_tmp_fake_G.vcf &
 snp-sites -v ${RAND}_tmp_fake_C.fa > ${RAND}_tmp_fake_C.vcf &
 snp-sites -v ${RAND}_tmp_fake_T.fa > ${RAND}_tmp_fake_T.vcf &
 
+wait
+
 # check if snps were found
 WC_A=`wc -l ${RAND}_tmp_fake_A.vcf | awk '{print $1}'`
+echo "made ${RAND}_tmp_fake_A.vcf, ${WC_A} lines" >> log.txt
 WC_G=`wc -l ${RAND}_tmp_fake_G.vcf | awk '{print $1}'`
+echo "made ${RAND}_tmp_fake_G.vcf, ${WC_G} lines" >> log.txt
 WC_C=`wc -l ${RAND}_tmp_fake_C.vcf | awk '{print $1}'`
+echo "made ${RAND}_tmp_fake_C.vcf, ${WC_C} lines" >> log.txt
 WC_T=`wc -l ${RAND}_tmp_fake_T.vcf | awk '{print $1}'`
+echo "made ${RAND}_tmp_fake_T.vcf, ${WC_T} lines" >> log.txt
 
 wait
 
@@ -264,4 +283,6 @@ paste ${RAND}_tmp_NAMES_COL.txt ${RAND}_tmp_SEQ_COL.txt | awk '$0=">"$0' | tr '\
 rm ${RAND}_tmp_*
 
 #-----------------------------------------------------
+
+echo "DONE"
 
