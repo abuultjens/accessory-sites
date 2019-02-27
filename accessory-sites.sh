@@ -84,14 +84,12 @@ echo "random prefix: ${RAND}" >> log.txt
 
 # make files for the original alignment
 snp-sites -v ${ALIGNMENT} > ${RAND}_tmp_original.vcf
-TMP=`wc -l ${RAND}_tmp_original.vcf | awk '{print $1}'`
-echo "made ${RAND}_tmp_original.vcf, ${TMP} lines" >> log.txt
 
 # check if snps were found in original alignment
-WC=`wc -l ${RAND}_tmp_original.vcf | awk '{print $1}'`
+N_SNPS=`cat ${RAND}_tmp_original.vcf | grep -v "#"| wc -l | awk '{print $1}'`
     
 ####### IF NO CORE SNPS
-if [ "$WC" == "0" ]; then
+if [ "$N_SNPS" == "0" ]; then
     # print error
     echo "No core snps were found"  
 
@@ -235,6 +233,9 @@ done
 # make a non-redundant list of gff hits
 sort ${RAND}_tmp_found_with_fake.txt | uniq | grep -v "###gff-version" > ${RAND}_tmp_nr_found_with_fake.txt
 
+# count how many invariant accessory sites were found
+N_IAC=`cat ${RAND}_tmp_nr_found_with_fake.txt| wc -l | awk '{print $1}'`
+
 # make header for output
 cat ${RAND}_tmp_fake_?.tab | grep "#" | head -1 > ${RAND}_tmp_HEAD.txt
 
@@ -284,5 +285,7 @@ rm ${RAND}_tmp_*
 
 #-----------------------------------------------------
 
-echo "DONE"
+echo "Found ${N_SNPS} snp sites"
+echo "Found ${N_IAC} invariant accessory sites"
+
 
