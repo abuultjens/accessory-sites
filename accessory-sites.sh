@@ -159,6 +159,7 @@ if [ ! -e "${RAND}_tmp_fake_A.tab" ]; then
     if [ ! -e "${RAND}_tmp_fake_G.tab" ]; then
         if [ ! -e "${RAND}_tmp_fake_C.tab" ]; then
             if [ ! -e "${RAND}_tmp_fake_T.tab" ]; then
+                echo "*** No invariant acessory sites were found ***"
                 exit 1
             fi
         fi
