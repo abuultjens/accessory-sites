@@ -9,7 +9,7 @@ Accessory sites are positions in an alignment in which one or more taxa have mis
 
 # Usage
 ```
-$ sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_DATA]  
+% sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_DATA]  
 ```
 
 * note that the command options must be in the exact order as specified above as they are treated as positional arguments
@@ -19,7 +19,7 @@ $ sh accessory-sites.sh [INFILE.fa] [PREFIX] [OUTFILE_DATA]
 
 # Help
 ```
-sh accessory-sites.sh help
+% sh accessory-sites.sh help
 ```
 
 # How it works
@@ -36,7 +36,7 @@ Basically, snp-sites is first run with the original alignment and the sites extr
 
 **original alignment:**   
 ```
-cat test.fa
+% cat test.fa
 >TAXA_A
 ATTN
 >TAXA_B
@@ -54,7 +54,7 @@ Site 4 = accessory position with no snp (useful information)
 
 **output from snp-sites:**   
 ```
-snp-sites -v test.fa | vcf-to-tab | tr -d '/' | tr '*' 'N' | cut -f 1,2,4- 
+% snp-sites -v test.fa | vcf-to-tab | tr -d '/' | tr '*' 'N' | cut -f 1,2,4- 
 #CHROM	POS	TAXA_A	TAXA_B	TAXA_C	TAXA_D
 1	2	T	G	G	G
 1	3	T	T	A	N
@@ -70,7 +70,7 @@ Site 4 = invariant accessory position (accessory position with no snp)
 # Example 1: run accessory-sites to extract invariant accessory sites and all snp sites:
 
 ```
-sh accessory-sites.sh test.fa OUT all_sites
+% sh accessory-sites.sh test.fa OUT all_sites
 ```
 inspect fasta output
 ```
@@ -86,7 +86,7 @@ GNN
 ```
 inspect table output
 ```
-cat OUT.tab
+% cat OUT.tab
 #CHROM	POS	TAXA_A	TAXA_B	TAXA_C	TAXA_D
 1	2	T	G	G	G
 1	3	T	T	A	N
@@ -102,11 +102,11 @@ Site 1 = core position no snp
 
 # Example 2: run accessory-sites to extract only invariant accessory sites:
 ```
-sh accessory-sites.sh test.fa OUT only_invariant_accessory_sites
+% sh accessory-sites.sh test.fa OUT only_invariant_accessory_sites
 ```
 inspect fasta output
 ```
-cat OUT.fa
+% cat OUT.fa
 >TAXA_A
 N
 >TAXA_B
@@ -118,7 +118,7 @@ N
 ```
 inspect table output
 ```
-cat OUT.tab
+% cat OUT.tab
 #CHROM	POS	TAXA_A	TAXA_B	TAXA_C	TAXA_D
 1	4	N	A	A	N
 ```
